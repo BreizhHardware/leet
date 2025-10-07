@@ -39,20 +39,24 @@ function ContestResponse() {
     const assignment = new Array(E);
     for (let e = 0; e < E; e++) {
         const student = students[e];
-        let bestDist = Infinity;
+        let bestCost = Infinity;
         let bestPoint = -1;
-        // Try for each preference in order
-        for (const pref of student.prefs) {
-            for (let d = 0; d < D; d++) {
-                const point = points[d];
-                if (point.totalStock <= 0 || point.stock.get(pref) <= 0) continue;
-                const dist = Math.abs(student.x - point.x) + Math.abs(student.y - point.y);
-                if (dist < bestDist) {
-                    bestDist = dist;
-                    bestPoint = d;
+        for (let d = 0; d < D; d++) {
+            const point = points[d];
+            if (point.totalStock <= 0) continue;
+            const dist = Math.abs(student.x - point.x) + Math.abs(student.y - point.y);
+            let pref = 4;
+            for (let p = 0; p < student.prefs.length; p++) {
+                if (point.stock.get(student.prefs[p]) > 0) {
+                    pref = p + 1;
+                    break;
                 }
             }
-            if (bestPoint !== -1) break; // Found for this pref
+            const cost = dist * pref * pref;
+            if (cost < bestCost) {
+                bestCost = cost;
+                bestPoint = d;
+            }
         }
         if (bestPoint === -1) {
             // Assign to closest with stock
@@ -60,8 +64,9 @@ function ContestResponse() {
                 const point = points[d];
                 if (point.totalStock <= 0) continue;
                 const dist = Math.abs(student.x - point.x) + Math.abs(student.y - point.y);
-                if (dist < bestDist) {
-                    bestDist = dist;
+                const cost = dist * 16; // 4*4
+                if (cost < bestCost) {
+                    bestCost = cost;
                     bestPoint = d;
                 }
             }
