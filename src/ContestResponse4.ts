@@ -1,0 +1,93 @@
+/*******
+ * Read input from STDIN
+ * Use: console.log() to output your result.
+ * Use: console.error() to output debug information into STDERR
+ * ***/
+
+var input = [];
+
+readline_object.on('line', (value) => {
+    // Read input values
+    input.push(value);
+});
+
+// Call ContestResponse when all inputs are read
+readline_object.on('close', ContestResponse);
+
+function ContestResponse() {
+    let line = 0;
+    const [D, P, E] = input[line++].split(' ').map(Number);
+    const points = [];
+    for (let d = 0; d < D; d++) {
+        const [x, y, s] = input[line++].split(' ').map(Number);
+        const baskets = input[line++].split(' ').map(Number);
+        const quantities = input[line++].split(' ').map(Number);
+        const stock = new Map<number, number>();
+        let totalStock = 0;
+        for (let i = 0; i < s; i++) {
+            stock.set(baskets[i], quantities[i]);
+            totalStock += quantities[i];
+        }
+        points.push({ x, y, stock, totalStock });
+    }
+    const students = [];
+    for (let e = 0; e < E; e++) {
+        const [x, y] = input[line++].split(' ').map(Number);
+        const prefs = input[line++].split(' ').map(Number);
+        students.push({ x, y, prefs });
+    }
+    const assignment = new Array(E);
+    for (let e = 0; e < E; e++) {
+        const student = students[e];
+        let bestDist = Infinity;
+        let bestPoint = -1;
+        // Try for each preference in order
+        for (const pref of student.prefs) {
+            for (let d = 0; d < D; d++) {
+                const point = points[d];
+                if (point.totalStock <= 0 || point.stock.get(pref) <= 0) continue;
+                const dist = Math.abs(student.x - point.x) + Math.abs(student.y - point.y);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    bestPoint = d;
+                }
+            }
+            if (bestPoint !== -1) break; // Found for this pref
+        }
+        if (bestPoint === -1) {
+            // Assign to closest with stock
+            for (let d = 0; d < D; d++) {
+                const point = points[d];
+                if (point.totalStock <= 0) continue;
+                const dist = Math.abs(student.x - point.x) + Math.abs(student.y - point.y);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    bestPoint = d;
+                }
+            }
+        }
+        assignment[e] = bestPoint;
+        const point = points[bestPoint];
+        point.totalStock--;
+        // Decrement the first pref available
+        let decremented = false;
+        for (const pref of student.prefs) {
+            if (point.stock.get(pref) > 0) {
+                point.stock.set(pref, point.stock.get(pref) - 1);
+                decremented = true;
+                break;
+            }
+        }
+        if (!decremented) {
+            // Decrement the lowest id with >0
+            let minId = Infinity;
+            for (const [id, qty] of point.stock) {
+                if (qty > 0 && id < minId) minId = id;
+            }
+            if (minId < Infinity) {
+                point.stock.set(minId, point.stock.get(minId) - 1);
+            }
+        }
+    }
+    console.log(assignment.join(' '));
+}

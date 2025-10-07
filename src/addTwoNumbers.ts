@@ -30,10 +30,7 @@ function intToList(num: bigint): ListNode | null {
     return dummy.next;
 }
 
-function addTwoNumbers(
-    l1: ListNode | null,
-    l2: ListNode | null
-): ListNode | null {
+function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
     const a = listToInt(l1);
     const b = listToInt(l2);
     return intToList(a + b);
