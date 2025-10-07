@@ -1,0 +1,17 @@
+{
+  "name": "Leet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "pretty": "prettier --write ./src/**/*.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "private": true,
+  "dependencies": {
+    "prettier": "^3.6.2"
+  }
+}
