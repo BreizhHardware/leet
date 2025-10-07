@@ -21,6 +21,8 @@ function ContestResponse() {
     console.error(
         `CPUs: ${require('os').cpus().length}, Total Memory: ${Math.round(require('os').totalmem() / 1024 / 1024)} MB`
     );
+    console.error(`CPU Speed: ${require('os').cpus()[0].speed} MHz, CPU reference: ${require('os').cpus()[0].model}`);
+
     let line = 0;
     // Read the first line: number of distribution points D, number of basket types P, number of students E
     const [D, P, E] = input[line++].split(' ').map(Number);
@@ -61,8 +63,8 @@ function ContestResponse() {
     // Sort students by minimum distance to any point, descending
     // This assigns students farther from points first, potentially improving assignments
     students.sort((a, b) => {
-        const minDistA = Math.min(...points.map(p => Math.abs(a.x - p.x) + Math.abs(a.y - p.y)));
-        const minDistB = Math.min(...points.map(p => Math.abs(b.x - p.x) + Math.abs(b.y - p.y)));
+        const minDistA = Math.min(...points.map((p) => Math.abs(a.x - p.x) + Math.abs(a.y - p.y)));
+        const minDistB = Math.min(...points.map((p) => Math.abs(b.x - p.x) + Math.abs(b.y - p.y)));
         return minDistB - minDistA;
     });
 
