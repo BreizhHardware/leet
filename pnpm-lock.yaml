@@ -12,6 +12,9 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2
     devDependencies:
+      '@node':
+        specifier: link:types/@node
+        version: link:types/@node
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

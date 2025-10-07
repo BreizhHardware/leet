@@ -16,6 +16,11 @@ readline_object.on('line', (value) => {
 readline_object.on('close', ContestResponse);
 
 function ContestResponse() {
+    console.error(`Node.js version: ${process.version}, Platform: ${process.platform}, Arch: ${process.arch}`);
+    console.error(`Input lines: ${input.length}`);
+    console.error(
+        `CPUs: ${require('os').cpus().length}, Total Memory: ${Math.round(require('os').totalmem() / 1024 / 1024)} MB`
+    );
     let line = 0;
     // Read the first line: number of distribution points D, number of basket types P, number of students E
     const [D, P, E] = input[line++].split(' ').map(Number);
