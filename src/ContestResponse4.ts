@@ -34,11 +34,16 @@ function ContestResponse() {
     for (let e = 0; e < E; e++) {
         const [x, y] = input[line++].split(' ').map(Number);
         const prefs = input[line++].split(' ').map(Number);
-        students.push({ x, y, prefs });
+        students.push({ x, y, prefs, index: e });
     }
+    // Sort students by minimum distance to any point, descending
+    students.sort((a, b) => {
+        const minDistA = Math.min(...points.map(p => Math.abs(a.x - p.x) + Math.abs(a.y - p.y)));
+        const minDistB = Math.min(...points.map(p => Math.abs(b.x - p.x) + Math.abs(b.y - p.y)));
+        return minDistB - minDistA;
+    });
     const assignment = new Array(E);
-    for (let e = 0; e < E; e++) {
-        const student = students[e];
+    for (const student of students) {
         let bestCost = Infinity;
         let bestPoint = -1;
         for (let d = 0; d < D; d++) {
@@ -71,7 +76,7 @@ function ContestResponse() {
                 }
             }
         }
-        assignment[e] = bestPoint;
+        assignment[student.index] = bestPoint;
         const point = points[bestPoint];
         point.totalStock--;
         // Decrement the first pref available
